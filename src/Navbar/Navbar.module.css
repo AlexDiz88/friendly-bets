@@ -1,0 +1,27 @@
+.wrapper {
+  background-color: rgb(33, 44, 82);
+  height: 50px;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgb(154, 154, 154);
+}
+
+.logo {
+  border: 3px solid rgb(33, 44, 82);
+  width: 5%;
+}
+
+.wrapper button {
+  width: 25%;
+  background-color: rgb(33, 44, 82);
+  border: none;
+  border-right: 1px solid rgb(154, 154, 154);
+  color: whitesmoke;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.wrapper button:nth-child(1) {
+  /* border-left: 1px solid gray; */
+}
