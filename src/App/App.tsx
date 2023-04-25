@@ -5,6 +5,7 @@ import LoginPage from '../LoginPage/LoginPage';
 import Layout from '../Layout/Layout';
 import Home from '../Home/Home';
 import UserRegistration from '../UserRegistration/UserRegistration';
+import UserResetPassword from '../UserResetPassword/UserResetPassword';
 
 function App(): JSX.Element {
   return (
@@ -14,6 +15,7 @@ function App(): JSX.Element {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/sign-up" element={<UserRegistration />} />
+          <Route path="/password-reset" element={<UserResetPassword />} />
         </Route>
       </Routes>
     </div>

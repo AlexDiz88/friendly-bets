@@ -1,26 +1,68 @@
 import React, { useState, ReactElement } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Parse from 'parse';
 import style from './UserRegistration.module.css';
+import Notification from '../Notification/Notification';
 
 function UserRegistration(): ReactElement {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationType, setNotificationType] = useState('');
+  const [notificationMsg, setNotificationMsg] = useState('');
+
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const doUserRegistration = async (): Promise<boolean> => {
+    setShowNotification(false);
     const usernameValue: string = username;
+    const emailValue: string = email;
     const passwordValue: string = password;
+    const password2Value: string = password2;
+    if (!isValidEmail) {
+      setShowNotification(true);
+      setNotificationType('error');
+      setNotificationMsg('Некорректный email');
+      setEmail('');
+      return false;
+    }
+    if (passwordValue !== password2Value) {
+      setShowNotification(true);
+      setNotificationType('error');
+      setNotificationMsg('Пароли не совпадают');
+      setPassword('');
+      setPassword2('');
+      return false;
+    }
     try {
-      const createdUser: Parse.User = await Parse.User.signUp(
-        usernameValue,
-        passwordValue,
-        ''
-      );
-      alert(`Success! User ${createdUser.getUsername()} was successfully created!`);
+      const user = await Parse.User.signUp(usernameValue, passwordValue, {
+        email: emailValue,
+      });
+      user.setEmail(emailValue);
+      setUsername('');
+      setEmail('');
+      setPassword('');
+      setPassword2('');
+      navigate('/', {
+        state: {
+          isShow: true,
+          type: 'success',
+          msg: 'Успешная регистрирация!',
+          duration: 5000,
+        },
+      });
       return true;
     } catch (error: any) {
-      alert(`Error! ${error}`);
+      setShowNotification(true);
+      setNotificationType('error');
+      setNotificationMsg(`Ошибка регистрации: ${error}`);
       setUsername('');
+      setEmail('');
       setPassword('');
+      setPassword2('');
       return false;
     }
   };
@@ -31,9 +73,19 @@ function UserRegistration(): ReactElement {
       <div>
         <input
           value={username}
+          autoComplete="true"
           onChange={(event: any) => setUsername(event.target.value)}
           placeholder="Имя пользователя"
           type="username"
+          className={style.inputField}
+        />
+      </div>
+      <div>
+        <input
+          value={email}
+          onChange={(event: any) => setEmail(event.target.value)}
+          placeholder="Email"
+          type="email"
           className={style.inputField}
         />
       </div>
@@ -47,6 +99,15 @@ function UserRegistration(): ReactElement {
         />
       </div>
       <div>
+        <input
+          value={password2}
+          onChange={(event: any) => setPassword2(event.target.value)}
+          placeholder="Пароль (еще раз)"
+          type="password"
+          className={style.inputField}
+        />
+      </div>
+      <div>
         <button
           type="button"
           className={style.registerBtn}
@@ -54,6 +115,13 @@ function UserRegistration(): ReactElement {
         >
           Зарегистрироваться
         </button>
+        {showNotification && (
+          <Notification
+            type={notificationType}
+            message={notificationMsg}
+            duration={5000}
+          />
+        )}
       </div>
     </div>
   );

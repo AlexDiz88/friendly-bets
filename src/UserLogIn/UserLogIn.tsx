@@ -1,7 +1,8 @@
-import React, { useState, ReactElement } from 'react';
+import React, { useState, ReactElement, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Parse from 'parse';
 import style from './UserLogIn.module.css';
+import Notification from '../Notification/Notification';
 
 function UserLogin(): ReactElement {
   const navigate = useNavigate();
@@ -9,34 +10,46 @@ function UserLogin(): ReactElement {
     event.preventDefault();
     navigate('/sign-up');
   };
+  const toPasswordReset = (event: any): void => {
+    event.preventDefault();
+    navigate('/password-reset');
+  };
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [currentUser, setCurrentUser] = useState<Parse.User | null>(null);
 
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationType, setNotificationType] = useState('');
+  const [notificationMsg, setNotificationMsg] = useState('');
+
   const getCurrentUser = async (): Promise<Parse.User | null> => {
-    setCurrentUser(await Parse.User.currentAsync());
+    const user: Parse.User | null = await Parse.User.currentAsync();
+    setCurrentUser(user);
     return currentUser;
   };
 
+  useEffect(() => {
+    getCurrentUser();
+  }, [currentUser]);
+
   const doUserLogIn = async (): Promise<boolean> => {
+    setShowNotification(false);
     const usernameValue: string = username;
     const passwordValue: string = password;
     try {
-      const loggedInUser: Parse.User = await Parse.User.logIn(
-        usernameValue,
-        passwordValue
-      );
-      alert(
-        `Success! User ${loggedInUser.get('username')} has successfully signed in!`
-      );
-      console.log(loggedInUser === (await Parse.User.currentAsync()));
+      await Parse.User.logIn(usernameValue, passwordValue);
+      setNotificationType('success');
+      setNotificationMsg('Вы успешно вошли в свой аккаунт');
+      setShowNotification(true);
       setUsername('');
       setPassword('');
       getCurrentUser();
       return true;
     } catch (error: any) {
-      alert(`Error! ${error.message}`);
+      setNotificationType('error');
+      setNotificationMsg(`Ошибка: ${error}`);
+      setShowNotification(true);
       setUsername('');
       setPassword('');
       return false;
@@ -46,15 +59,18 @@ function UserLogin(): ReactElement {
   const doUserLogOut = async (): Promise<boolean> => {
     try {
       await Parse.User.logOut();
-      if ((await Parse.User.currentAsync()) === null) {
-        alert('Success! No user is logged in anymore!');
+      const user: Parse.User | null = await Parse.User.currentAsync();
+      if (user === null) {
+        setNotificationType('default');
+        setNotificationMsg('Вы вышли из системы');
+        setShowNotification(true);
       }
       getCurrentUser();
       return true;
     } catch (error: any) {
-      alert(`Error! ${error.message}`);
-      setUsername('');
-      setPassword('');
+      setNotificationType('error');
+      setNotificationMsg(`Ошибка: ${error.message}`);
+      setShowNotification(true);
       return false;
     }
   };
@@ -82,17 +98,30 @@ function UserLogin(): ReactElement {
               className={style.inputField}
             />
           </div>
+          <div className={style.hint}>
+            Забыл пароль?{' '}
+            <a href="#" onClick={toPasswordReset}>
+              Восстановить
+            </a>
+          </div>
           <div>
             <button
               type="button"
-              className={style.registerBtn}
+              className={style.loginBtn}
               onClick={() => doUserLogIn()}
             >
               Войти
             </button>
+            {showNotification && (
+              <Notification
+                type={notificationType}
+                message={notificationMsg}
+                duration={5000}
+              />
+            )}
             <p className={style.hint}>
               Нет аккаунта?{' '}
-              <a className="form__link" href="#" onClick={toRegistrationPage}>
+              <a href="#" onClick={toRegistrationPage}>
                 Зарегистрируйся
               </a>
             </p>
@@ -101,17 +130,26 @@ function UserLogin(): ReactElement {
       )}
       {currentUser !== null && (
         <div className={style.wrapper}>
-          <div className={style.title}>
-            {`Hello ${currentUser.get('username')}!`}
+          <div className={style.title}>Личный кабинет</div>
+          <div className={style.info}>
+            <div>{`Имя: ${currentUser.get('username')}`}</div>
+            <div>{`E-mail: ${currentUser.get('email')}`}</div>
           </div>
           <div>
             <button
               type="button"
-              className={style.registerBtn}
+              className={style.logoutBtn}
               onClick={() => doUserLogOut()}
             >
               Выйти
             </button>
+            {showNotification && (
+              <Notification
+                type={notificationType}
+                message={notificationMsg}
+                duration={5000}
+              />
+            )}
           </div>
         </div>
       )}
