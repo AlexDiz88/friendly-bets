@@ -10,6 +10,7 @@ function UserRegistration(): ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+
   const [showNotification, setShowNotification] = useState(false);
   const [notificationType, setNotificationType] = useState('');
   const [notificationMsg, setNotificationMsg] = useState('');
@@ -18,18 +19,24 @@ function UserRegistration(): ReactElement {
 
   const doUserRegistration = async (): Promise<boolean> => {
     setShowNotification(false);
-    const usernameValue: string = username;
-    const emailValue: string = email;
-    const passwordValue: string = password;
-    const password2Value: string = password2;
     if (!isValidEmail) {
       setShowNotification(true);
+      console.log('******awdawdawdwdad******');
+
       setNotificationType('error');
       setNotificationMsg('Некорректный email');
       setEmail('');
       return false;
     }
-    if (passwordValue !== password2Value) {
+    if (password === '' || password2 === '') {
+      setShowNotification(true);
+      setNotificationType('error');
+      setNotificationMsg('Не указан пароль');
+      setPassword('');
+      setPassword2('');
+      return false;
+    }
+    if (password !== password2) {
       setShowNotification(true);
       setNotificationType('error');
       setNotificationMsg('Пароли не совпадают');
@@ -38,10 +45,10 @@ function UserRegistration(): ReactElement {
       return false;
     }
     try {
-      const user = await Parse.User.signUp(usernameValue, passwordValue, {
-        email: emailValue,
+      const user = await Parse.User.signUp(username, password, {
+        email,
       });
-      user.setEmail(emailValue);
+      user.setEmail(email);
       setUsername('');
       setEmail('');
       setPassword('');
@@ -50,7 +57,7 @@ function UserRegistration(): ReactElement {
         state: {
           isShow: true,
           type: 'success',
-          msg: 'Успешная регистрирация!',
+          msg: 'Успешная регистрация!',
           duration: 5000,
         },
       });

@@ -1,10 +1,13 @@
-import React, { useState, ReactElement, useEffect } from 'react';
+import React, { useState, ReactElement, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Parse from 'parse';
 import style from './UserLogIn.module.css';
 import Notification from '../Notification/Notification';
 
 function UserLogin(): ReactElement {
+  // eslint-disable-next-line no-console
+  console.log('*user login*');
+
   const navigate = useNavigate();
   const toRegistrationPage = (event: any): void => {
     event.preventDefault();
@@ -23,15 +26,16 @@ function UserLogin(): ReactElement {
   const [notificationType, setNotificationType] = useState('');
   const [notificationMsg, setNotificationMsg] = useState('');
 
-  const getCurrentUser = async (): Promise<Parse.User | null> => {
+  const getCurrentUser = useCallback(async (): Promise<Parse.User | null> => {
     const user: Parse.User | null = await Parse.User.currentAsync();
     setCurrentUser(user);
     return currentUser;
-  };
+  }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     getCurrentUser();
-  }, [currentUser]);
+    //  console.log('useEffect call');
+  }, [getCurrentUser]);
 
   const doUserLogIn = async (): Promise<boolean> => {
     setShowNotification(false);

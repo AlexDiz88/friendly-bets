@@ -7,6 +7,7 @@ interface Props {
   duration: number;
 }
 
+// eslint-disable-next-line object-curly-newline
 function Notification({ type, message, duration }: Props): JSX.Element {
   const [isVisible, setIsVisible] = useState(false);
 

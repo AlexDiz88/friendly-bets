@@ -3,8 +3,11 @@ import Parse from 'parse';
 import UserLogin from '../UserLogIn/UserLogIn';
 
 function LoginPage(): JSX.Element {
-  // eslint-disable-next-line no-console
+  //   eslint-disable-next-line no-console
   //   console.log(Parse.User.current());
+
+  React.useEffect(() => console.log('****login page****'), []);
+
   const [currentUser, setCurrentUser] = useState<Parse.User | null>(null);
 
   const getCurrentUser = async (): Promise<Parse.User | null> => {

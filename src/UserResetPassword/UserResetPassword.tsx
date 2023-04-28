@@ -37,20 +37,24 @@ function UserResetPassword(): ReactElement {
         <div>
           Для сброса пароля, введите адрес электронной почты вашей учетной записи:
         </div>
-        <input
-          className={style.inputField}
-          value={email}
-          placeholder="Введите ваш E-mail"
-          onChange={(event: any) => setEmail(event.target.value)}
-          type="email"
-        />
-        <button
-          type="button"
-          className={style.registerBtn}
-          onClick={() => doRequestPasswordReset()}
-        >
-          Запросить сброс пароля
-        </button>
+        <div>
+          <input
+            className={style.inputField}
+            value={email}
+            placeholder="Введите ваш E-mail"
+            onChange={(event: any) => setEmail(event.target.value)}
+            type="email"
+          />
+        </div>
+        <div>
+          <button
+            type="button"
+            className={style.registerBtn}
+            onClick={() => doRequestPasswordReset()}
+          >
+            Запросить сброс пароля
+          </button>
+        </div>
         {showNotification && (
           <Notification
             type={notificationType}
