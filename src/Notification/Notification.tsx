@@ -7,7 +7,6 @@ interface Props {
   duration: number;
 }
 
-// eslint-disable-next-line object-curly-newline
 function Notification({ type, message, duration }: Props): JSX.Element {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -15,7 +14,7 @@ function Notification({ type, message, duration }: Props): JSX.Element {
     setIsVisible(true);
     const timer = setTimeout(() => setIsVisible(false), duration || 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [type, message, duration]);
 
   return (
     <div

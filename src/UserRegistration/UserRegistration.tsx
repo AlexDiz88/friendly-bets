@@ -18,10 +18,8 @@ function UserRegistration(): ReactElement {
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const doUserRegistration = async (): Promise<boolean> => {
-    setShowNotification(false);
     if (!isValidEmail) {
       setShowNotification(true);
-      console.log('******awdawdawdwdad******');
 
       setNotificationType('error');
       setNotificationMsg('Некорректный email');

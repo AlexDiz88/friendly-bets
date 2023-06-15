@@ -7,6 +7,7 @@ import Home from '../Home/Home';
 import UserRegistration from '../UserRegistration/UserRegistration';
 import UserResetPassword from '../UserResetPassword/UserResetPassword';
 import Bets from '../Bets/Bets';
+import BetInput from '../BetInput/BetInput';
 
 function App(): JSX.Element {
   return (
@@ -16,6 +17,7 @@ function App(): JSX.Element {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/bets" element={<Bets />} />
+          <Route path="/bet-input" element={<BetInput />} />
           <Route path="/sign-up" element={<UserRegistration />} />
           <Route path="/password-reset" element={<UserResetPassword />} />
         </Route>

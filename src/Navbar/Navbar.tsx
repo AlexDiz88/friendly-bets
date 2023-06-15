@@ -7,6 +7,7 @@ function Navbar(): JSX.Element {
   const btnNavHome = (): void => navigate('/');
   const btnNavLoginPage = (): void => navigate('/login');
   const btnNavBets = (): void => navigate('/bets');
+  const btnNavBetInput = (): void => navigate('/bet-input');
   return (
     <div className={style.wrapper}>
       <button type="button" onClick={btnNavHome}>
@@ -14,6 +15,9 @@ function Navbar(): JSX.Element {
       </button>
       <button type="button" onClick={btnNavBets}>
         Bets
+      </button>
+      <button type="button" onClick={btnNavBetInput}>
+        Bet Input
       </button>
       <button type="button" onClick={btnNavLoginPage}>
         Login
